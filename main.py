@@ -23,22 +23,45 @@ class Playground(arcade.Window):
         cell_y = y//self.cell_size
 
         self.added_symbols.append((cell_x, cell_y, 'X'))
-        direction = self.check_win_conditions(cell_x, cell_y, 'X')
-        if direction:
+        direction, last_elements = self.check_win_conditions(cell_x, cell_y, 'X')
+        if last_elements:
             self.game_over = True
-            self.draw_end_game(direction, cell_x, cell_y)
+            self.draw_end_game(direction, last_elements)
 
 
+    def draw_end_game(self, direction, last_elements):
 
-
-    def draw_end_game(self, direction, x, y):
         self.draw_grid()
-        fin_x = x+direction[0]*4
-        fin_y = y+direction[1]*4
+        x = last_elements[0]
+        y = last_elements[1]
+
+        cur_x = x+direction[0]
+        cur_y = y+direction[1]
+
+        if (cur_x, cur_y, 'X') in self.added_symbols:
         # maybe TODO allign line for horizontal
-        print(direction)
-        arcade.draw_line((x-direction[0])*self.cell_size, (y-direction[1])*self.cell_size, fin_x*self.cell_size, fin_y*self.cell_size, color=arcade.color.RED, line_width=3 )
+            while(cur_x, cur_y, 'X') in self.added_symbols:
+                cur_x = cur_x+direction[0]
+                cur_y = cur_y + direction[1]
+            print(direction)
+            start_x = (x+direction[0])*self.cell_size + self.cell_size//2
+            start_y = (y+direction[1]) * self.cell_size + self.cell_size // 2
+            end_x = (cur_x-direction[0])*self.cell_size + self.cell_size//2
+            end_y = (cur_y - direction[1])*self.cell_size + self.cell_size//2
+            arcade.draw_line(start_x, start_y, end_x, end_y, color=arcade.color.RED, line_width=3 )
         # arcade.draw_line((x+1)*self.cell_size, (y+1)*self.cell_size, fin_x*self.cell_size, fin_y*self.cell_size, color=arcade.color.RED, line_width=3 )
+        # else:
+        #     cur_x = x -direction[0]
+        #     cur_y = y - direction[1]
+        #     while(cur_x, cur_y, 'X') in self.added_symbols:
+        #         cur_x = cur_x-direction[0]
+        #         cur_y = cur_y - direction[1]
+        #     print(direction)
+        #     start_x = x*self.cell_size + self.cell_size//2
+        #     start_y = y * self.cell_size + self.cell_size // 2
+        #     end_x = cur_x+direction[0] + self.cell_size//2
+        #     end_y = cur_y + direction[1] + self.cell_size//2
+        #     arcade.draw_line(start_x, start_y, end_x, end_y, color=arcade.color.RED, line_width=3 )
 
 
     def check_win_conditions(self, last_x, last_y, symbol = 'X'):
@@ -66,8 +89,8 @@ class Playground(arcade.Window):
                     break
 
             if count >=4:
-                return (new_x, new_y)
-        return False
+                return (x, y),(new_x, new_y)
+        return False, False
 
     def draw_grid(self):
         for x in range(self.grid_size):
