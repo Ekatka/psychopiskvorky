@@ -37,13 +37,13 @@ class Playground(arcade.Window):
         fin_y = y+direction[1]*4
         # maybe TODO allign line for horizontal
         print(direction)
-        # arcade.draw_line((x-direction[0])*self.cell_size, (y-direction[1])*self.cell_size, fin_x*self.cell_size, fin_y*self.cell_size, color=arcade.color.RED, line_width=3 )
-        arcade.draw_line((x+1)*self.cell_size, (y+1)*self.cell_size, fin_x*self.cell_size, fin_y*self.cell_size, color=arcade.color.RED, line_width=3 )
+        arcade.draw_line((x-direction[0])*self.cell_size, (y-direction[1])*self.cell_size, fin_x*self.cell_size, fin_y*self.cell_size, color=arcade.color.RED, line_width=3 )
+        # arcade.draw_line((x+1)*self.cell_size, (y+1)*self.cell_size, fin_x*self.cell_size, fin_y*self.cell_size, color=arcade.color.RED, line_width=3 )
 
 
     def check_win_conditions(self, last_x, last_y, symbol = 'X'):
 
-        bordering_coordinates = [(1, 0), (0, 1), (-1, 0), (0, -1), (1, 1), (-1, -1), (1, -1), (-1, 1)]
+        bordering_coordinates = [(1, 0), (0, 1), (1, 1), (1, -1)]
         for x, y in bordering_coordinates:
             count = 0
             new_x = last_x+x
@@ -55,8 +55,18 @@ class Playground(arcade.Window):
                     count +=1
                 else:
                     break
-            if count ==4:
-                return (x, y)
+            new_x = last_x-x
+            new_y = last_y -y
+            for _ in range (4):
+                if (new_x, new_y, symbol) in self.added_symbols:
+                    new_x = new_x - x
+                    new_y = new_y - y
+                    count += 1
+                else:
+                    break
+
+            if count >=4:
+                return (new_x, new_y)
         return False
 
     def draw_grid(self):
