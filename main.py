@@ -120,7 +120,7 @@ class Playground(arcade.Window):
     #     arcade.draw_text(symbol, x_cor, y_cor)
 def main():
     game = Playground(title='Player 1')
-    arcade.run()
+    arcade.run()    
 
 
 if __name__ == "__main__":
