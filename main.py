@@ -1,7 +1,8 @@
 import arcade
+from network import Network
 
 class Playground(arcade.Window):
-    def __init__(self, title, cell_size=30, grid_size=25):
+    def __init__(self, title, symbols, cell_size=30, grid_size=25):
         self.cell_size = cell_size
         self.grid_size = grid_size
         self.window_size = self.grid_size * self.cell_size
@@ -9,6 +10,7 @@ class Playground(arcade.Window):
         arcade.set_background_color(arcade.color.WHITE)
         self.added_symbols = []
         self.game_over = False
+        self.symbols = symbols
 
 
     def on_draw(self):
@@ -49,20 +51,6 @@ class Playground(arcade.Window):
             end_x = (cur_x-direction[0])*self.cell_size + self.cell_size//2
             end_y = (cur_y - direction[1])*self.cell_size + self.cell_size//2
             arcade.draw_line(start_x, start_y, end_x, end_y, color=arcade.color.RED, line_width=3 )
-        # arcade.draw_line((x+1)*self.cell_size, (y+1)*self.cell_size, fin_x*self.cell_size, fin_y*self.cell_size, color=arcade.color.RED, line_width=3 )
-        # else:
-        #     cur_x = x -direction[0]
-        #     cur_y = y - direction[1]
-        #     while(cur_x, cur_y, 'X') in self.added_symbols:
-        #         cur_x = cur_x-direction[0]
-        #         cur_y = cur_y - direction[1]
-        #     print(direction)
-        #     start_x = x*self.cell_size + self.cell_size//2
-        #     start_y = y * self.cell_size + self.cell_size // 2
-        #     end_x = cur_x+direction[0] + self.cell_size//2
-        #     end_y = cur_y + direction[1] + self.cell_size//2
-        #     arcade.draw_line(start_x, start_y, end_x, end_y, color=arcade.color.RED, line_width=3 )
-
 
     def check_win_conditions(self, last_x, last_y, symbol = 'X'):
 
@@ -119,8 +107,25 @@ class Playground(arcade.Window):
     #     y_cor = pos_y* self.cell_size
     #     arcade.draw_text(symbol, x_cor, y_cor)
 def main():
-    game = Playground(title='Player 1')
-    arcade.run()    
+    n = Network()
+    gameOn = True
+    player = n.getNumOfP()
+    print(player)
+    while gameOn:
+        try:
+            game = n.send('get')
+            playground = Playground()
+            playground.symbols = game.fullMoves
+
+
+        except:
+            gameOn = False
+            print("Hra nejde načíst")
+
+
+
+    # game = Playground(title='Player 1')
+    # arcade.run()
 
 
 if __name__ == "__main__":

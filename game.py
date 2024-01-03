@@ -12,7 +12,7 @@ class Game():
     def getPlayerMove(self, p):
 
         return self.guessMove[p]
-    def player(self, player, move):
+    def play(self, player, move):
          self.guessMove[0] = move
          if player == 0:
              self.p1Went = True
@@ -46,6 +46,9 @@ class Game():
             self.turn = not self.turn
         self.p1Went = False
         self.p2Went = False
+
+    def resetGame(self):
+        self.fullMoves = [[], []]
 
 
 
