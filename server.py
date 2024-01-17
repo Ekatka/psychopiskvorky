@@ -4,7 +4,7 @@ import pickle
 from game import Game
 
 server = "localhost"
-port = 9999
+port = 5555
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -12,10 +12,11 @@ try:
     s.bind((server, port))
 except socket.error as e:
     print(e)
+    # exit()
 
 
 
-print('Server spuštěn, čekám na připojení')
+print('Server is running, waiting for connection')
 
 def ThreadedClient(conn, numOfPlayer, game):
     conn.send(str.encode(str(numOfPlayer)))
@@ -47,13 +48,15 @@ while True:
     conn, addr = s.accept()
     print("Connected to:", addr)
 
-    numOfPlayers +=1
-    if numOfPlayers == 1:
+
+    if numOfPlayers == 0:
         game = Game()
+
     else:
         game.ready = True
 
-        start_new_thread(ThreadedClient(conn, numOfPlayers, game))
+    start_new_thread(ThreadedClient, (conn, numOfPlayers, game))
+    numOfPlayers +=1
 
 
 

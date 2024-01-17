@@ -7,6 +7,13 @@ class Game():
         self.fullMoves = [[], []]
         self.guessed = False
         self.turn = 0
+        self.winner = None
+        self.winningDirection = []
+        self.winningPlacement = []
+        self.wrongGuess = []
+
+    def getTurn(self):
+        return self.turn
 
 
     def getPlayerMove(self, p):
@@ -44,11 +51,50 @@ class Game():
     def resetWent(self):
         if not self.guessed:
             self.turn = not self.turn
+            self.wrongGuess = self.guessMove[not self.turn]
         self.p1Went = False
         self.p2Went = False
 
     def resetGame(self):
         self.fullMoves = [[], []]
+
+    def check_win_conditions(self, last_x, last_y, player):
+        """
+
+        :param last_x: last added x, and y by which player
+        :param last_y:
+        :param player: [0, 1]
+        :return:
+        """
+
+        bordering_coordinates = [(1, 0), (0, 1), (1, 1), (1, -1)]
+        for x, y in bordering_coordinates:
+            count = 0
+            new_x = last_x + x
+            new_y = last_y + y
+            for _ in range(4):
+                if (new_x, new_y) in self.fullMoves[player]:
+                    new_x = new_x + x
+                    new_y = new_y + y
+                    count += 1
+                else:
+                    break
+            new_x = last_x - x
+            new_y = last_y - y
+            for _ in range(4):
+                if (new_x, new_y) in self.fullMoves[player]:
+                    new_x = new_x - x
+                    new_y = new_y - y
+                    count += 1
+                else:
+                    break
+
+            if count >= 4:
+                self.winningDirection = [x,y]
+                self.winningPlacement = [new_x, new_y]
+                self.winner = player
+        self.winningDirection = False
+        self.winningPlacement = False
 
 
 
