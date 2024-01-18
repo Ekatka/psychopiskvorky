@@ -50,13 +50,17 @@ while True:
 
 
     if numOfPlayers == 0:
+        numOfPlayers += 1
         game = Game()
 
     else:
         game.ready = True
+        numOfPlayers +=1
 
-    start_new_thread(ThreadedClient, (conn, numOfPlayers, game))
-    numOfPlayers +=1
+    print(game)
+
+    start_new_thread(ThreadedClient, (conn, numOfPlayers-1, game))
+
 
 
 

@@ -11,25 +11,29 @@ class Game():
         self.winningDirection = []
         self.winningPlacement = []
         self.wrongGuess = []
+        '''
+        
+        '''
 
     def getTurn(self):
         return self.turn
 
-
     def getPlayerMove(self, p):
 
         return self.guessMove[p]
+
     def play(self, player, move):
-         self.guessMove[0] = move
-         if player == 0:
-             self.p1Went = True
-         else:
-             self.p2Went = True
+        self.guessMove[0] = move
+        if player == 0:
+            self.p1Went = True
+        else:
+            self.p2Went = True
+
     def connected(self):
         return self.ready
 
     def bothChose(self):
-        return self.p1Went and self.p2Went
+        return self.guessMove[0] != 0 and self.guessMove[1] != 0
 
     def updateMoves(self):
         """
@@ -90,12 +94,8 @@ class Game():
                     break
 
             if count >= 4:
-                self.winningDirection = [x,y]
+                self.winningDirection = [x, y]
                 self.winningPlacement = [new_x, new_y]
                 self.winner = player
         self.winningDirection = False
         self.winningPlacement = False
-
-
-
-
