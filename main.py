@@ -31,6 +31,7 @@ class Playground(arcade.Window):
 
     def on_draw(self):
         arcade.start_render()
+        self.game = self.n.send('get')
         draw_grid(self.game, self, self.state)
         if self.game_over:
             draw_end_game(self.game, self)
@@ -44,11 +45,13 @@ class Playground(arcade.Window):
 
             self.moves = [cell_x, cell_y]
             print(self.moves)
-            self.game.guessMove[self.player] = self.moves
-            print(self.game.guessMove)
+            # self.game.guessMove[self.player] = self.moves
+            # print(self.game.guessMove)
+            self.n.send(self.moves)
             if self.game.bothChose():
-                self.game.updateMoves()
+                # self.game.updateMoves()
                 self.waiting = False
+                self.n.send('resetWent')
             else:
                 self.waiting = True
 
@@ -112,18 +115,19 @@ def draw_end_game(game, playground):
 
 
 def draw_grid(game, playground, state):
+    # game = network.send('get')
     grid_offset = 100
 
     for x in range(playground.get_grid_size() + 1):
-        start_x = x * playground.get_cell_size() + grid_offset / 2
-        end_x = x * playground.get_cell_size() + grid_offset / 2
+        start_x = x * playground.get_cell_size() + grid_offset // 2
+        end_x = x * playground.get_cell_size() + grid_offset // 2
         start_y = grid_offset
         end_y = playground.get_window_size()
         arcade.draw_line(start_x, start_y, end_x, end_y, arcade.color.BLACK)
 
     for y in range(playground.get_grid_size() + 1):
-        start_x = grid_offset / 2
-        end_x = playground.get_window_size() - grid_offset / 2
+        start_x = grid_offset // 2
+        end_x = playground.get_window_size() - grid_offset // 2
         start_y = y * playground.get_cell_size() + grid_offset
         # end_y = y * playground.get_cell_size()
         end_y = start_y
@@ -132,17 +136,17 @@ def draw_grid(game, playground, state):
     for symbol in game.fullMoves[0]:
         # x_cor = symbol[0] * self.cell_size
         # y_cor = symbol[1] * self.cell_size
-        x_cor = symbol[0] * playground.get_cell_size() + playground.get_cell_size() / 2
-        y_cor = symbol[1] * playground.get_cell_size() + playground.get_cell_size() / 2
+        x_cor = symbol[0] * playground.get_cell_size() + playground.get_cell_size() // 2
+        y_cor = symbol[1] * playground.get_cell_size() + playground.get_cell_size() // 2
         arcade.draw_text('O', x_cor, y_cor, arcade.color.BLACK, font_size=20, anchor_x="center", anchor_y="center")
     for symbol in game.fullMoves[1]:
-        x_cor = symbol[0] * playground.get_cell_size() + playground.get_cell_size() / 2
-        y_cor = symbol[1] * playground.get_cell_size() + playground.get_cell_size() / 2
+        x_cor = symbol[0] * playground.get_cell_size() + playground.get_cell_size() // 2
+        y_cor = symbol[1] * playground.get_cell_size() + playground.get_cell_size() // 2
         arcade.draw_text('X', x_cor, y_cor, arcade.color.BLACK, font_size=20, anchor_x="center", anchor_y="center")
 
     if game.p1Went and game.p2Went:
-        x_cor = game.wrongGuess[0] * playground.get_cell_size() + playground.get_cell_size() / 2
-        y_cor = game.wrongGuess[1] * playground.get_cell_size() + playground.get_cell_size() / 2
+        x_cor = game.wrongGuess[0] * playground.get_cell_size() + playground.get_cell_size() // 2
+        y_cor = game.wrongGuess[1] * playground.get_cell_size() + playground.get_cell_size() // 2
         arcade.draw_text('.', x_cor, y_cor, arcade.color.RED, font_size=20, anchor_x='center', anchor_y="center")
 
     if state == 0:

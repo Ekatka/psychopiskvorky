@@ -4,9 +4,10 @@ import pickle
 from game import Game
 
 server = "localhost"
-port = 5555
+port = 6666
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
 
 try:
     s.bind((server, port))
@@ -30,7 +31,11 @@ def ThreadedClient(conn, numOfPlayer, game):
                     game.resetWent()
                 elif data == 'resetGame':
                     game.resetGame()
+                    print('AAAAAAAAAA')
+                    print(game.fullMoves)
                 elif data != 'get':
+                    data = data.split(' ')
+                    data = [int(i) for i in data]
                     game.play(numOfPlayer, data)
 
                 conn.sendall(pickle.dumps(game))
