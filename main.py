@@ -38,6 +38,9 @@ class Playground(arcade.Window):
 
     def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
 
+        if self.game.guessMove == [0,0]:
+            self.waiting = False
+
         if not self.waiting and self.game.ready:
             cell_x = (x - self.grid_offset // 2) // self.cell_size
             cell_y = (y - self.grid_offset) // self.cell_size
@@ -47,13 +50,14 @@ class Playground(arcade.Window):
             print(self.moves)
             # self.game.guessMove[self.player] = self.moves
             # print(self.game.guessMove)
-            self.n.send(self.moves)
+            self.game = self.n.send(self.moves)
             if self.game.bothChose():
                 # self.game.updateMoves()
                 self.waiting = False
                 self.n.send('resetWent')
             else:
                 self.waiting = True
+
 
         # direction, last_elements = self.check_win_conditions(cell_x, cell_y, 'X')
         # if last_elements:
@@ -136,12 +140,12 @@ def draw_grid(game, playground, state):
     for symbol in game.fullMoves[0]:
         # x_cor = symbol[0] * self.cell_size
         # y_cor = symbol[1] * self.cell_size
-        x_cor = symbol[0] * playground.get_cell_size() + playground.get_cell_size() // 2
-        y_cor = symbol[1] * playground.get_cell_size() + playground.get_cell_size() // 2
+        x_cor = symbol[0] * playground.get_cell_size() + playground.get_cell_size() // 2 + grid_offset // 2
+        y_cor = symbol[1] * playground.get_cell_size() + playground.get_cell_size() // 2 + grid_offset
         arcade.draw_text('O', x_cor, y_cor, arcade.color.BLACK, font_size=20, anchor_x="center", anchor_y="center")
     for symbol in game.fullMoves[1]:
-        x_cor = symbol[0] * playground.get_cell_size() + playground.get_cell_size() // 2
-        y_cor = symbol[1] * playground.get_cell_size() + playground.get_cell_size() // 2
+        x_cor = symbol[0] * playground.get_cell_size() + playground.get_cell_size() // 2 + grid_offset // 2
+        y_cor = symbol[1] * playground.get_cell_size() + playground.get_cell_size() // 2+ grid_offset
         arcade.draw_text('X', x_cor, y_cor, arcade.color.BLACK, font_size=20, anchor_x="center", anchor_y="center")
 
     if game.p1Went and game.p2Went:
@@ -188,50 +192,13 @@ def main():
 
     playground = Playground(player, title=f'You are a player {player}', game=game, network=n)
     arcade.run()
-    # while gameOn:
-    #     try:
-    #         game = n.send('get')
-    #         playground.game = game
-    #
-    #
-    #     except:
-    #
-    #         # gameOn = False
-    #         print("Hra nejde načíst")
-    #         break
-    #
-    # turn = game.getTurn()
-    # if turn == player:
-    #     print('Your turn')
-    #     if game.guess[player] == 0 and game.quess[int(not player)] == 0:
-    #         state = 1
-    #     elif game.guess[player] == 0 and game.quess[int(not player)] != 0:
-    #         state = 2
-    #     elif game.guess[player] != 0 and game.quess[int(not player)] == 0:
-    #         state = 3
-    #
-    # else:
-    #     print('Wait for the opponent')
-    #     if game.guess[player] == 0 and game.quess[int(not player)] == 0:
-    #         state = 4
-    #     elif game.guess[player] == 0 and game.quess[int(not player)] != 0:
-    #         state = 5
-    #     elif game.guess[player] != 0 and game.quess[int(not player)] == 0:
-    #         state = 6
-    # playground = Playground(state, title=f'You are a player {player}', game=game)
-
-    # if playground.newMove():
-    #     while not game.bothChose():
-    #         playground.symbols = game.fullMoves
-
-    # game = Playground(title='Player 1')
 
 
 if __name__ == "__main__":
     main()
 
 """
-Posilat data, pak to muze fungovat
-Az user vybere policko, tak ho musim odeslat
+uzivatel nemuze vybirat, protoze ceka, 
+nastavit hezci krizky?
 
 """
