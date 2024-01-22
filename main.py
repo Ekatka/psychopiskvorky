@@ -37,8 +37,10 @@ class Playground(arcade.Window):
             draw_end_game(self.game, self)
 
     def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
+        print('waiting',self.waiting)
+        print('game ready', self.game.ready)
 
-        if self.game.guessMove == [0,0]:
+        if self.game.guessMove == [0,0] or self.game.guessMove[not self.player] != 0:
             self.waiting = False
 
         if not self.waiting and self.game.ready:
@@ -55,8 +57,7 @@ class Playground(arcade.Window):
                 # self.game.updateMoves()
                 self.waiting = False
                 self.n.send('resetWent')
-            else:
-                self.waiting = True
+
 
 
         # direction, last_elements = self.check_win_conditions(cell_x, cell_y, 'X')
@@ -147,11 +148,10 @@ def draw_grid(game, playground, state):
         x_cor = symbol[0] * playground.get_cell_size() + playground.get_cell_size() // 2 + grid_offset // 2
         y_cor = symbol[1] * playground.get_cell_size() + playground.get_cell_size() // 2+ grid_offset
         arcade.draw_text('X', x_cor, y_cor, arcade.color.BLACK, font_size=20, anchor_x="center", anchor_y="center")
-
-    if game.p1Went and game.p2Went:
-        x_cor = game.wrongGuess[0] * playground.get_cell_size() + playground.get_cell_size() // 2
-        y_cor = game.wrongGuess[1] * playground.get_cell_size() + playground.get_cell_size() // 2
-        arcade.draw_text('.', x_cor, y_cor, arcade.color.RED, font_size=20, anchor_x='center', anchor_y="center")
+    if game.wrongGuess != 0:
+        x_cor = game.wrongGuess[0] * playground.get_cell_size() + playground.get_cell_size() // 2 + grid_offset // 2
+        y_cor = game.wrongGuess[1] * playground.get_cell_size() + playground.get_cell_size() // 2 + grid_offset + 22
+        arcade.draw_text('.', x_cor, y_cor, arcade.color.RED, font_size=50, anchor_x='center', anchor_y="center")
 
     if state == 0:
         text = 'Initializing'

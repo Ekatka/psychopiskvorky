@@ -11,6 +11,7 @@ class Game():
         self.winningDirection = []
         self.winningPlacement = []
         self.wrongGuess = 0
+        self.waiting = False
         '''
         
         '''
@@ -29,7 +30,11 @@ class Game():
         else:
             self.p2Went = True
         if self.p1Went and self.p2Went:
+            self.waiting = False
             self.updateMoves()
+
+        else:
+            self.waiting = True
 
     def connected(self):
         return self.ready
@@ -56,7 +61,7 @@ class Game():
 
         if not self.guessed:
             self.turn = not self.turn
-            self.wrongGuess = self.guessMove[not self.turn]
+            self.wrongGuess = self.guessMove[self.turn]
 
     def resetWent(self):
 
@@ -64,6 +69,7 @@ class Game():
         self.p2Went = False
         self.guessMove[0] = 0
         self.guessMove[1] = 0
+        self.waiting = False
         # self.bothChose = False
 
     def resetGame(self):
