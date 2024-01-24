@@ -48,17 +48,19 @@ class Playground(arcade.Window):
         if not self.waiting and self.game.ready:
             cell_x = (x - self.grid_offset // 2) // self.cell_size
             cell_y = (y - self.grid_offset) // self.cell_size
-            self.newMove = True
 
-            self.moves = [cell_x, cell_y]
-            print(self.moves)
-            # self.game.guessMove[self.player] = self.moves
-            # print(self.game.guessMove)
-            self.game = self.n.send(self.moves)
-            if self.game.bothChose():
-                # self.game.updateMoves()
-                self.waiting = False
-                self.n.send('resetWent')
+            if not [cell_x, cell_y] in self.game.fullMoves[0] or [cell_x, cell_y] in self.game.fullMoves[1]:
+                if cell_x >= 0 and cell_x < 25 and cell_y >= 0 and cell_y < 25:
+            # self.newMove = True
+                    self.moves = [cell_x, cell_y]
+
+                    # self.game.guessMove[self.player] = self.moves
+                    # print(self.game.guessMove)
+                    self.game = self.n.send(self.moves)
+                    if self.game.bothChose():
+                        # self.game.updateMoves()
+                        self.waiting = False
+                        self.n.send('resetWent')
 
 
 
@@ -113,15 +115,15 @@ def draw_end_game(game, playground):
     cur_x = x + game.winningDirection[0]
     cur_y = y + game.winningDirection[1]
 
-    if (cur_x, cur_y) in game.fullMoves[game.winner]:
-        while (cur_x, cur_y) in game.fullMoves[game.winner]:
+    if [cur_x, cur_y] in game.fullMoves[game.winner]:
+        while [cur_x, cur_y] in game.fullMoves[game.winner]:
             cur_x = cur_x + game.winningDirection[0]
             cur_y = cur_y + game.winningDirection[1]
-        print(game.winningDirection)
-        start_x = (x + game.winningDirection[0]) * playground.get_cell_size + playground.get_cell_size // 2 + grid_offset // 2
-        start_y = (y + game.winningDirection[1]) * playground.get_cell_size + playground.get_cell_size // 2 + grid_offset
-        end_x = (cur_x - game.winningDirection[0]) * playground.get_cell_size + playground.get_cell_size // 2 + grid_offset // 2
-        end_y = (cur_y - game.winningDirection[1]) * playground.get_cell_size + playground.get_cell_size // 2 + grid_offset
+        # print(game.winningDirection)
+        start_x = (x + game.winningDirection[0]) * playground.get_cell_size() + playground.get_cell_size() // 2 + grid_offset // 2
+        start_y = (y + game.winningDirection[1]) * playground.get_cell_size() + playground.get_cell_size() // 2 + grid_offset
+        end_x = (cur_x - game.winningDirection[0]) * playground.get_cell_size() + playground.get_cell_size() // 2 + grid_offset // 2
+        end_y = (cur_y - game.winningDirection[1]) * playground.get_cell_size() + playground.get_cell_size() // 2 + grid_offset
         arcade.draw_line(start_x, start_y, end_x, end_y, color=arcade.color.RED, line_width=3)
 
 
@@ -176,7 +178,7 @@ def draw_grid(game, playground, state):
     elif state == 7:
         text = 'Waiting for the opponent to connect'
     elif state == 8:
-        text = 'Game over'
+        text = f'Game over, the winner is player {game.winner}'
 
     text_x = playground.width / 2
     text_y = grid_offset - 50
@@ -187,12 +189,12 @@ def main():
     n = Network()
     gameOn = True
     player = n.getNumOfP()
-    print(player)
+    # print(player)
 
     try:
         game = n.send('get')
 
-        print(game)
+        # print(game)
     except:
         # gameOn = False
         print("Cannot find the game")

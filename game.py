@@ -63,11 +63,13 @@ class Game():
             self.fullMoves[self.turn].append(self.guessMove[self.turn])
             self.guessed = False
 
+        self.check_win_conditions(self.guessMove[self.turn][0], self.guessMove[self.turn][1], symbolPlayer)
+
         if not self.guessed:
             self.turn = not self.turn
             self.wrongGuess = self.guessMove[self.turn]
 
-        self.check_win_conditions(self.guessMove[self.turn][0], self.guessMove[self.turn][1], symbolPlayer)
+
 
     def resetWent(self):
 

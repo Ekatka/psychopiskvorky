@@ -5,8 +5,8 @@ class Network:
     def __init__(self):
         self.players = 0
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.port = 5555
-        self.host = "localhost"
+        self.port = 6666
+        self.host = "192.168.0.66"
         self.numOfPlayer = int(self.connect())
 
         pass
