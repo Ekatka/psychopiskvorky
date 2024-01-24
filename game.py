@@ -12,6 +12,7 @@ class Game():
         self.winningPlacement = []
         self.wrongGuess = 0
         self.waiting = False
+        self.gameOver = False
         '''
         
         '''
@@ -53,15 +54,20 @@ class Game():
         p2 = self.guessMove[1]
 
         if p1 == p2:
+            symbolPlayer = not self.turn
             self.fullMoves[not self.turn].append(p1)
             self.guessed = True
 
         else:
+            symbolPlayer = self.turn
             self.fullMoves[self.turn].append(self.guessMove[self.turn])
+            self.guessed = False
 
         if not self.guessed:
             self.turn = not self.turn
             self.wrongGuess = self.guessMove[self.turn]
+
+        self.check_win_conditions(self.guessMove[self.turn][0], self.guessMove[self.turn][1], symbolPlayer)
 
     def resetWent(self):
 
@@ -90,7 +96,7 @@ class Game():
             new_x = last_x + x
             new_y = last_y + y
             for _ in range(4):
-                if (new_x, new_y) in self.fullMoves[player]:
+                if [new_x, new_y] in self.fullMoves[player]:
                     new_x = new_x + x
                     new_y = new_y + y
                     count += 1
@@ -99,7 +105,7 @@ class Game():
             new_x = last_x - x
             new_y = last_y - y
             for _ in range(4):
-                if (new_x, new_y) in self.fullMoves[player]:
+                if [new_x, new_y] in self.fullMoves[player]:
                     new_x = new_x - x
                     new_y = new_y - y
                     count += 1
@@ -110,5 +116,6 @@ class Game():
                 self.winningDirection = [x, y]
                 self.winningPlacement = [new_x, new_y]
                 self.winner = player
-        self.winningDirection = False
-        self.winningPlacement = False
+                self.gameOver = True
+        # self.winningDirection = False
+        # self.winningPlacement = False

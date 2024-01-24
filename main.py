@@ -32,9 +32,11 @@ class Playground(arcade.Window):
     def on_draw(self):
         arcade.start_render()
         self.game = self.n.send('get')
-        draw_grid(self.game, self, self.state)
-        if self.game_over:
+        if self.game.gameOver:
             draw_end_game(self.game, self)
+        else:
+            draw_grid(self.game, self, self.state)
+
 
     def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
         print('waiting',self.waiting)
@@ -77,6 +79,9 @@ class Playground(arcade.Window):
         player = self.player
         if not self.game.ready:
             self.state = 7
+        elif self.game.gameOver == True:
+            self.state = 8
+
 
         else:
 
@@ -99,7 +104,8 @@ class Playground(arcade.Window):
 
 
 def draw_end_game(game, playground):
-    draw_grid(game, playground)
+    grid_offset = 100
+    draw_grid(game, playground, state=8)
 
     x = game.winningPlacement[0]
     y = game.winningPlacement[1]
@@ -107,15 +113,15 @@ def draw_end_game(game, playground):
     cur_x = x + game.winningDirection[0]
     cur_y = y + game.winningDirection[1]
 
-    if (cur_x, cur_y) in game.symbols[game.winner]:
-        while (cur_x, cur_y) in game.symbols[game.winner]:
+    if (cur_x, cur_y) in game.fullMoves[game.winner]:
+        while (cur_x, cur_y) in game.fullMoves[game.winner]:
             cur_x = cur_x + game.winningDirection[0]
             cur_y = cur_y + game.winningDirection[1]
         print(game.winningDirection)
-        start_x = (x + game.winningDirection[0]) * playground.get_cell_size + playground.get_cell_size // 2
-        start_y = (y + game.winningDirection[1]) * playground.get_cell_size + playground.get_cell_size // 2
-        end_x = (cur_x - game.winningDirection[0]) * playground.get_cell_size + playground.get_cell_size // 2
-        end_y = (cur_y - game.winningDirection[1]) * playground.get_cell_size + playground.get_cell_size // 2
+        start_x = (x + game.winningDirection[0]) * playground.get_cell_size + playground.get_cell_size // 2 + grid_offset // 2
+        start_y = (y + game.winningDirection[1]) * playground.get_cell_size + playground.get_cell_size // 2 + grid_offset
+        end_x = (cur_x - game.winningDirection[0]) * playground.get_cell_size + playground.get_cell_size // 2 + grid_offset // 2
+        end_y = (cur_y - game.winningDirection[1]) * playground.get_cell_size + playground.get_cell_size // 2 + grid_offset
         arcade.draw_line(start_x, start_y, end_x, end_y, color=arcade.color.RED, line_width=3)
 
 
@@ -169,6 +175,8 @@ def draw_grid(game, playground, state):
         text = 'Waiting for the opponents move'
     elif state == 7:
         text = 'Waiting for the opponent to connect'
+    elif state == 8:
+        text = 'Game over'
 
     text_x = playground.width / 2
     text_y = grid_offset - 50
@@ -198,7 +206,7 @@ if __name__ == "__main__":
     main()
 
 """
-uzivatel nemuze vybirat, protoze ceka, 
+opravit uhodnuti,  
 nastavit hezci krizky?
 
 """
