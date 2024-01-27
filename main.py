@@ -39,28 +39,33 @@ class Playground(arcade.Window):
 
 
     def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
-        print('waiting',self.waiting)
-        print('game ready', self.game.ready)
+        # print('waiting',self.waiting)
+        # print('game ready', self.game.ready)
+        if self.game.gameOver:
+            self.n.send('resetGame')
 
-        if self.game.guessMove == [0,0] or self.game.guessMove[not self.player] != 0:
-            self.waiting = False
+        else:
 
-        if not self.waiting and self.game.ready:
-            cell_x = (x - self.grid_offset // 2) // self.cell_size
-            cell_y = (y - self.grid_offset) // self.cell_size
+            if self.game.guessMove == [0,0] or self.game.guessMove[not self.player] != 0:
+                self.waiting = False
 
-            if not [cell_x, cell_y] in self.game.fullMoves[0] or [cell_x, cell_y] in self.game.fullMoves[1]:
-                if cell_x >= 0 and cell_x < 25 and cell_y >= 0 and cell_y < 25:
-            # self.newMove = True
-                    self.moves = [cell_x, cell_y]
+            if not self.waiting and self.game.ready:
+                cell_x = (x - self.grid_offset // 2) // self.cell_size
+                cell_y = (y - self.grid_offset) // self.cell_size
 
-                    # self.game.guessMove[self.player] = self.moves
-                    # print(self.game.guessMove)
-                    self.game = self.n.send(self.moves)
-                    if self.game.bothChose():
-                        # self.game.updateMoves()
-                        self.waiting = False
-                        self.n.send('resetWent')
+                if not [cell_x, cell_y] in self.game.fullMoves[0] or [cell_x, cell_y] in self.game.fullMoves[1]:
+                    if cell_x >= 0 and cell_x < 25 and cell_y >= 0 and cell_y < 25:
+                # self.newMove = True
+                        self.moves = [cell_x, cell_y]
+
+                        # self.game.guessMove[self.player] = self.moves
+                        # print(self.game.guessMove)
+                        self.game = self.n.send(self.moves)
+                        if self.game.bothChose():
+                            # self.game.updateMoves()
+                            self.waiting = False
+                            self.n.send('resetWent')
+
 
 
 
@@ -177,12 +182,21 @@ def draw_grid(game, playground, state):
         text = 'Waiting for the opponents move'
     elif state == 7:
         text = 'Waiting for the opponent to connect'
-    elif state == 8:
-        text = f'Game over, the winner is player {game.winner}'
 
-    text_x = playground.width / 2
-    text_y = grid_offset - 50
-    arcade.draw_text(text, text_x, text_y, arcade.color.BLACK, font_size=20, anchor_x="center", anchor_y="center")
+
+    if state != 8:
+        text_x = playground.width / 2
+        text_y = grid_offset - 40
+        arcade.draw_text(text, text_x, text_y, arcade.color.BLACK, font_size=20, anchor_x="center", anchor_y="center")
+
+    else:
+        text = f'Game over, the winner is player {int(game.winner)}.'
+        text2 = 'Click anywhere to start a new game.'
+        text_x = playground.width / 2
+        text_y = grid_offset - 35
+        arcade.draw_text(text, text_x, text_y, arcade.color.BLACK, font_size=20, anchor_x="center", anchor_y="center")
+        text_y = grid_offset - 65
+        arcade.draw_text(text2, text_x, text_y, arcade.color.BLACK, font_size=20, anchor_x="center", anchor_y="center")
 
 
 def main():

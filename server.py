@@ -3,7 +3,11 @@ from _thread import *
 import pickle
 from game import Game
 
-server = "192.168.0.66"
+
+
+#uživatel svoji IP adresu, pak se čeká na připojení
+
+server = input('Enter your IP address')
 port = 6666
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -13,7 +17,7 @@ try:
     s.bind((server, port))
 except socket.error as e:
     print(e)
-    # exit()
+    exit()
 
 
 
@@ -31,8 +35,6 @@ def ThreadedClient(conn, numOfPlayer, game):
                     game.resetWent()
                 elif data == 'resetGame':
                     game.resetGame()
-                    print('AAAAAAAAAA')
-                    print(game.fullMoves)
                 elif data != 'get':
                     data = data.split(' ')
                     data = [int(i) for i in data]
@@ -50,21 +52,23 @@ def ThreadedClient(conn, numOfPlayer, game):
 s.listen(2)
 numOfPlayers = 0
 while True:
-    conn, addr = s.accept()
-    print("Connected to:", addr)
+    #Čekáme na dvě připojení
+    if numOfPlayers < 2:
+        conn, addr = s.accept()
+        print("Connected to:", addr)
 
 
-    if numOfPlayers == 0:
-        numOfPlayers += 1
-        game = Game()
+        if numOfPlayers == 0:
+            numOfPlayers += 1
+            game = Game()
 
-    else:
-        game.ready = True
-        numOfPlayers +=1
+        else:
+            game.ready = True
+            numOfPlayers +=1
 
-    print(game)
+        print(game)
 
-    start_new_thread(ThreadedClient, (conn, numOfPlayers-1, game))
+        start_new_thread(ThreadedClient, (conn, numOfPlayers-1, game))
 
 
 

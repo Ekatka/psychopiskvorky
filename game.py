@@ -57,6 +57,7 @@ class Game():
             symbolPlayer = not self.turn
             self.fullMoves[not self.turn].append(p1)
             self.guessed = True
+            self.wrongGuess = 0
 
         else:
             symbolPlayer = self.turn
@@ -81,7 +82,11 @@ class Game():
         # self.bothChose = False
 
     def resetGame(self):
+        self.resetWent()
         self.fullMoves = [[], []]
+        self.gameOver = False
+        self.turn = not self.winner
+
 
     def check_win_conditions(self, last_x, last_y, player):
         """
