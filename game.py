@@ -13,9 +13,6 @@ class Game():
         self.wrongGuess = 0
         self.waiting = False
         self.gameOver = False
-        '''
-        
-        '''
 
     def getTurn(self):
         return self.turn

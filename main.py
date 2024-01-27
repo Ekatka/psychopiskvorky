@@ -69,11 +69,6 @@ class Playground(arcade.Window):
 
 
 
-        # direction, last_elements = self.check_win_conditions(cell_x, cell_y, 'X')
-        # if last_elements:
-        #     self.game_over = True
-        #     self.draw_end_game(direction, last_elements)
-
     def get_moves(self):
         return self.moves
 

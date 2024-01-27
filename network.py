@@ -9,7 +9,6 @@ class Network:
         self.host = input('Enter server IP address')
         self.numOfPlayer = int(self.connect())
 
-        pass
 
     def getNumOfP(self):
         return self.numOfPlayer
