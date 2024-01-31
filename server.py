@@ -5,10 +5,10 @@ from game import Game
 
 
 
-#uživatel svoji IP adresu, pak se čeká na připojení
+#uživatel zadá svoji IP adresu, pak se čeká na připojení
 
 server = input('Enter your IP address')
-port = 6666
+port = 5555
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -26,26 +26,31 @@ def ThreadedClient(conn, numOfPlayer, game):
     conn.send(str.encode(str(numOfPlayer)))
     while True:
         try:
+            #pro každého z klientu kontrolujeme data
             data = conn.recv(2048).decode()
             if not data:
                 break
             else:
+                 #kontrolujeme obsah dat, připadně provedeme přikazy
                 if data == 'resetWent':
                     game.resetWent()
                 elif data == 'resetGame':
                     game.resetGame()
+                #když data nejsou get ani jiný z příkazů, tak to musí být zahraný krok
                 elif data != 'get':
                     data = data.split(' ')
                     data = [int(i) for i in data]
                     game.play(numOfPlayer, data)
-
+                #vrátíme současnou hru
                 conn.sendall(pickle.dumps(game))
 
 
         except:
             break
 
-    print("Ztráta připojení")
+    game.ready = False
+    game.gameOver = True
+    conn.sendall(pickle.dumps(game))
     conn.close()
 
 s.listen(2)
@@ -65,7 +70,6 @@ while True:
             game.ready = True
             numOfPlayers +=1
 
-        print(game)
 
         start_new_thread(ThreadedClient, (conn, numOfPlayers-1, game))
 
