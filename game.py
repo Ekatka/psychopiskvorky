@@ -70,6 +70,7 @@ class Game():
         self.p2Went = False
         self.guessMove[0] = 0
         self.guessMove[1] = 0
+        self.wrongGuess = 0
 
 
 
