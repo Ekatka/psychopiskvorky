@@ -69,11 +69,13 @@ class Playground(arcade.Window):
                         # když si vybrali oba, vynuluju kroky
                         if self.game.bothChose():
                             self.waiting = False
+                            #oba hráči zahráli, bude nové kolo
                             self.n.send('resetWent')
 
 
 
     def update(self, delta_time: float):
+        #zjistím stav hry
         self.game = self.n.send('get')
         self.manage_states()
 
@@ -218,6 +220,7 @@ def main():
     # přiradím hráči číslo
     player = n.getNumOfP()
     try:
+        #dostanu první objekt hry
         game = n.send('get')
 
 

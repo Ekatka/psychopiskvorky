@@ -5,7 +5,7 @@ from game import Game
 
 # uživatel zadá svoji IP adresu, pak se čeká na připojení
 server = input('Enter your IP address')
-port = 5555
+port = 6666
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -55,11 +55,13 @@ numOfPlayers = 0
 while True:
     # Čekáme na dvě připojení
     if numOfPlayers < 2:
+        #zjistím, kam se budou odesílat data
         conn, addr = s.accept()
         print("Connected to:", addr)
 
         if numOfPlayers == 0:
             numOfPlayers += 1
+            #vytvoří se objekt hry
             game = Game()
 
         else:
